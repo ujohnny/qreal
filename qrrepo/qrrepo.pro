@@ -20,13 +20,15 @@ HEADERS += \
 	private/qrRepoGlobal.h \
 	private/serializer.h \
 	private/classes/object.h \
-	private/folderCompressor.h
+	private/folderCompressor.h \
+	private/clientManager.h
 
 SOURCES += \
 	private/client.cpp \
 	private/serializer.cpp \
 	private/classes/object.cpp \
-	private/folderCompressor.cpp
+	private/folderCompressor.cpp \
+	private/clientManager.cpp
 
 # API репозитория
 HEADERS += \

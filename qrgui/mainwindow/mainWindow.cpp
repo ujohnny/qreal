@@ -117,7 +117,10 @@ MainWindow::MainWindow()
 	if (saveFile.exists())
 		mSaveFile = saveFile.absoluteFilePath();
 
-	mModels = new models::Models(saveFile.absoluteFilePath(), mEditorManager);
+	QList<QString> saveFiles;
+	saveFiles.push_back(saveFile.absoluteFilePath());
+
+	mModels = new models::Models(saveFiles, mEditorManager);
 
 	mErrorReporter = new gui::ErrorReporter(mUi->errorListWidget, mUi->errorDock);
 	mErrorReporter->updateVisibility(SettingsManager::value("warningWindow", true).toBool());

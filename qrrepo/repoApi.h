@@ -7,6 +7,7 @@
 #include "commonRepoApi.h"
 #include "graphicalRepoApi.h"
 #include "logicalRepoApi.h"
+#include "private/clientManager.h"
 
 #include <QtCore/QSet>
 
@@ -15,7 +16,8 @@ namespace qrRepo {
 	class QRREPO_EXPORT RepoApi : public GraphicalRepoApi, public LogicalRepoApi, public RepoControlInterface
 	{
 	public:
-		explicit RepoApi(QString const &workingDirectory);
+		//explicit RepoApi(QString const &workingDirectory);
+		explicit RepoApi(QList<QString> const &workingFiles);
 		// Default destructor ok.
 
 		qReal::Id copy(qReal::Id const &src);
@@ -101,7 +103,7 @@ namespace qrRepo {
 
 		void open(QString const &saveFile);
 
-		virtual QString workingFile() const;
+		virtual QList<QString> workingFiles() const;
 
 		// "Глобальные" методы, позволяющие делать запросы к модели в целом.
 		//Returns all elements with .element() == type.element()
@@ -126,7 +128,8 @@ namespace qrRepo {
 		qReal::IdList links(qReal::Id const &id, QString const &direction) const;
 		void removeLinkEnds(QString const &endName, qReal::Id const &id);
 
-		details::Client mClient;
+		//details::Client mClient;
+		mutable details::ClientManager mClientManager;
 	};
 
 }

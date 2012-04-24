@@ -6,50 +6,50 @@ using namespace qrRepo;
 using namespace qrRepo::details;
 using namespace qReal;
 
-RepoApi::RepoApi(QString const &workingDirectory)
-		: mClient(workingDirectory)
+RepoApi::RepoApi(QList<QString> const &workingFiles)
+	: mClientManager(workingFiles)
 {
 }
 
 QString RepoApi::name(Id const &id) const
 {
-	Q_ASSERT(mClient.property(id, "name").canConvert<QString>());
-	return mClient.property(id, "name").toString();
+	Q_ASSERT(mClientManager.access()->property(id, "name").canConvert<QString>());
+	return mClientManager.access()->property(id, "name").toString();
 }
 
 void RepoApi::setName(Id const &id, QString const &name)
 {
-	mClient.setProperty(id, "name", name);
+	mClientManager.access()->setProperty(id, "name", name);
 }
 
 IdList RepoApi::children(Id const &id) const
 {
-	return mClient.children(id);
+	return mClientManager.access()->children(id);
 }
 
 void RepoApi::addChild(Id const &id, Id const &child)
 {
-	mClient.addChild(id, child);
+	mClientManager.access()->addChild(id, child);
 }
 
 void RepoApi::addChild(Id const &id, Id const &child, Id const &logicalId)
 {
-	mClient.addChild(id, child, logicalId);
+	mClientManager.access()->addChild(id, child, logicalId);
 }
 
 void RepoApi::stackBefore(Id const &id, Id const &child, Id const &sibling)
 {
-	mClient.stackBefore(id, child, sibling);
+	mClientManager.access()->stackBefore(id, child, sibling);
 }
 
 Id RepoApi::copy(qReal::Id const &src)
 {
-	return mClient.cloneObject(src);
+	return mClientManager.access()->cloneObject(src);
 }
 
 void RepoApi::removeChild(Id const &id, Id const &child)
 {
-	mClient.removeChild(id, child);
+	mClientManager.access()->removeChild(id, child);
 }
 
 void RepoApi::removeChildren(Id const &id)
@@ -102,7 +102,7 @@ void RepoApi::removeElement(Id const &id)
 			deleteUsage(source, id);
 	}
 
-	mClient.remove(id);
+	mClientManager.access()->remove(id);
 }
 
 void RepoApi::removeLinkEnds(QString const &endName, Id const &id) {
@@ -116,22 +116,22 @@ void RepoApi::removeLinkEnds(QString const &endName, Id const &id) {
 
 Id RepoApi::parent(Id const &id) const
 {
-	return mClient.parent(id);
+	return mClientManager.access()->parent(id);
 }
 
 void RepoApi::setParent(Id const &id, Id const &parent)
 {
-	Id const oldParent = mClient.parent(id);
-	mClient.removeChild(oldParent, id);
-	mClient.setParent(id, parent);
+	Id const oldParent = mClientManager.access()->parent(id);
+	mClientManager.access()->removeChild(oldParent, id);
+	mClientManager.access()->setParent(id, parent);
 }
 
 IdList RepoApi::links(Id const &id, QString const &direction) const
 {
-	IdList links = mClient.property(id, "links").value<IdList>();
+	IdList links = mClientManager.access()->property(id, "links").value<IdList>();
 	IdList result;
 	foreach (Id const link, links) {
-		if (mClient.property(link, direction).value<Id>() == id) {
+		if (mClientManager.access()->property(link, direction).value<Id>() == id) {
 			result.append(link);
 		}
 	}
@@ -155,12 +155,12 @@ IdList RepoApi::links(Id const &id) const
 
 qReal::IdList RepoApi::outgoingConnections(qReal::Id const &id) const
 {
-	return mClient.property(id, "outgoingConnections").value<IdList>();
+	return mClientManager.access()->property(id, "outgoingConnections").value<IdList>();
 }
 
 qReal::IdList RepoApi::incomingConnections(qReal::Id const &id) const
 {
-	return mClient.property(id, "incomingConnections").value<IdList>();
+	return mClientManager.access()->property(id, "incomingConnections").value<IdList>();
 }
 
 void RepoApi::connect(qReal::Id const &source, qReal::Id const &destination)
@@ -177,12 +177,12 @@ void RepoApi::disconnect(qReal::Id const &source, qReal::Id const &destination)
 
 qReal::IdList RepoApi::outgoingUsages(qReal::Id const &id) const
 {
-	return mClient.property(id, "outgoingUsages").value<IdList>();
+	return mClientManager.access()->property(id, "outgoingUsages").value<IdList>();
 }
 
 qReal::IdList RepoApi::incomingUsages(qReal::Id const &id) const
 {
-	return mClient.property(id, "incomingUsages").value<IdList>();
+	return mClientManager.access()->property(id, "incomingUsages").value<IdList>();
 }
 
 void RepoApi::addUsage(qReal::Id const &source, qReal::Id const &destination)
@@ -237,158 +237,158 @@ QString RepoApi::typeName(Id const &id) const
 
 QVariant RepoApi::property(Id const &id, QString const &propertyName) const
 {
-	return mClient.property(id, propertyName);
+	return mClientManager.access()->property(id, propertyName);
 }
 
 QString RepoApi::stringProperty(Id const &id, QString const &propertyName) const
 {
-	Q_ASSERT(mClient.property(id, propertyName).canConvert<QString>());
-	return mClient.property(id, propertyName).toString();
+	Q_ASSERT(mClientManager.access()->property(id, propertyName).canConvert<QString>());
+	return mClientManager.access()->property(id, propertyName).toString();
 }
 
 void RepoApi::setProperty(Id const &id, QString const &propertyName, QVariant const &value)
 {
-	mClient.setProperty(id, propertyName, value);
+	mClientManager.access()->setProperty(id, propertyName, value);
 }
 
 void RepoApi::removeProperty(Id const &id, QString const &propertyName)
 {
-	mClient.removeProperty(id, propertyName);
+	mClientManager.access()->removeProperty(id, propertyName);
 }
 
 void RepoApi::copyProperties(const Id &dest, const Id &src)
 {
-	mClient.copyProperties(dest, src);
+	mClientManager.access()->copyProperties(dest, src);
 }
 
 bool RepoApi::hasProperty(Id const &id, QString const &propertyName) const
 {
-	return mClient.hasProperty(id, propertyName);
+	return mClientManager.access()->hasProperty(id, propertyName);
 }
 
 Id RepoApi::from(Id const &id) const
 {
-	Q_ASSERT(mClient.property(id, "from").canConvert<Id>());
-	return mClient.property(id, "from").value<Id>();
+	Q_ASSERT(mClientManager.access()->property(id, "from").canConvert<Id>());
+	return mClientManager.access()->property(id, "from").value<Id>();
 }
 
 void RepoApi::setFrom(Id const &id, Id const &from)
 {
 	if (hasProperty(id, "from")) {
-		Id prev = mClient.property(id, "from").value<Id>();
+		Id prev = mClientManager.access()->property(id, "from").value<Id>();
 		removeFromList(prev, "links", id, "from");
 	}
-	mClient.setProperty(id, "from", from.toVariant());
+	mClientManager.access()->setProperty(id, "from", from.toVariant());
 	addToIdList(from, "links", id, "from");
 }
 
 Id RepoApi::to(Id const &id) const
 {
-	Q_ASSERT(mClient.property(id, "to").canConvert<Id>());
-	return mClient.property(id, "to").value<Id>();
+	Q_ASSERT(mClientManager.access()->property(id, "to").canConvert<Id>());
+	return mClientManager.access()->property(id, "to").value<Id>();
 }
 
 void RepoApi::setTo(Id const &id, Id const &to)
 {
 	if (hasProperty(id, "to")) {
-		Id prev = mClient.property(id, "to").value<Id>();
+		Id prev = mClientManager.access()->property(id, "to").value<Id>();
 		removeFromList(prev, "links", id, "to");
 	}
-	mClient.setProperty(id, "to", to.toVariant());
+	mClientManager.access()->setProperty(id, "to", to.toVariant());
 	addToIdList(to, "links", id, "to");
 }
 
 double RepoApi::fromPort(Id const &id) const
 {
-	Q_ASSERT(mClient.property(id, "fromPort").canConvert<double>());
-	return mClient.property(id, "fromPort").value<double>();
+	Q_ASSERT(mClientManager.access()->property(id, "fromPort").canConvert<double>());
+	return mClientManager.access()->property(id, "fromPort").value<double>();
 }
 
 void RepoApi::setFromPort(Id const &id, double fromPort)
 {
-	mClient.setProperty(id, "fromPort", fromPort);
+	mClientManager.access()->setProperty(id, "fromPort", fromPort);
 }
 
 double RepoApi::toPort(Id const &id) const
 {
-	Q_ASSERT(mClient.property(id, "toPort").canConvert<double>());
-	return mClient.property(id, "toPort").value<double>();
+	Q_ASSERT(mClientManager.access()->property(id, "toPort").canConvert<double>());
+	return mClientManager.access()->property(id, "toPort").value<double>();
 }
 
 void RepoApi::setToPort(Id const &id, double toPort)
 {
-	mClient.setProperty(id, "toPort", toPort);
+	mClientManager.access()->setProperty(id, "toPort", toPort);
 }
 
 QVariant RepoApi::position(Id const &id) const
 {
-	return mClient.property(id, "position");
+	return mClientManager.access()->property(id, "position");
 }
 
 QVariant RepoApi::configuration(Id const &id) const
 {
-	return mClient.property(id, "configuration");
+	return mClientManager.access()->property(id, "configuration");
 }
 
 void RepoApi::setPosition(Id const &id, QVariant const &position)
 {
-	mClient.setProperty(id, "position", position);
+	mClientManager.access()->setProperty(id, "position", position);
 }
 
 void RepoApi::setConfiguration(Id const &id, QVariant const &configuration)
 {
-	mClient.setProperty(id, "configuration", configuration);
+	mClientManager.access()->setProperty(id, "configuration", configuration);
 }
 
 bool RepoApi::isLogicalElement(qReal::Id const &id) const
 {
-	return mClient.isLogicalId(id);
+	return mClientManager.access()->isLogicalId(id);
 }
 
 bool RepoApi::isGraphicalElement(qReal::Id const &id) const
 {
-	return !mClient.isLogicalId(id);
+	return !mClientManager.access()->isLogicalId(id);
 }
 
 qReal::Id RepoApi::logicalId(qReal::Id const &id) const
 {
-	return mClient.logicalId(id);
+	return mClientManager.access()->logicalId(id);
 }
 
 void RepoApi::exterminate()
 {
-	mClient.exterminate();
+	mClientManager.access()->exterminate();
 }
 
 void RepoApi::open(QString const &saveFile)
 {
-	mClient.open(saveFile);
+	mClientManager.access()->open(saveFile);
 }
 
 void RepoApi::saveAll() const
 {
-	mClient.saveAll();
+	mClientManager.access()->saveAll();
 }
 
 void RepoApi::saveTo(QString const &workingFile)
 {
-	mClient.setWorkingFile(workingFile);
-	mClient.saveAll();
+	mClientManager.access()->setWorkingFile(workingFile);
+	mClientManager.access()->saveAll();
 }
 
 void RepoApi::importFromDisk(QString const &importedFile)
 {
-	mClient.importFromDisk(importedFile);
+	mClientManager.access()->importFromDisk(importedFile);
 }
 
 void RepoApi::save(qReal::IdList list) const
 {
-	mClient.save(list);
+	mClientManager.access()->save(list);
 }
 
-QString RepoApi::workingFile() const
+QList<QString> RepoApi::workingFiles() const
 {
-	return mClient.workingFile();
+	return mClientManager.workingFiles();
 }
 
 void RepoApi::addToIdList(Id const &target, QString const &listName, Id const &data, QString const &direction)
@@ -396,19 +396,19 @@ void RepoApi::addToIdList(Id const &target, QString const &listName, Id const &d
 	if (target == Id::rootId())
 		return;
 
-	IdList list = mClient.property(target, listName).value<IdList>();
+	IdList list = mClientManager.access()->property(target, listName).value<IdList>();
 
 	// Значения в списке должны быть уникальны.
 	if (list.contains(data))
 		return;
 
 	list.append(data);
-	mClient.setProperty(target, listName, IdListHelper::toVariant(list));
+	mClientManager.access()->setProperty(target, listName, IdListHelper::toVariant(list));
 
 	if (listName == "links") {
-		IdList temporaryRemovedList = mClient.temporaryRemovedLinksAt(target, direction);
+		IdList temporaryRemovedList = mClientManager.access()->temporaryRemovedLinksAt(target, direction);
 		temporaryRemovedList.removeAll(data);
-		mClient.setTemporaryRemovedLinks(target, direction, temporaryRemovedList);
+		mClientManager.access()->setTemporaryRemovedLinks(target, direction, temporaryRemovedList);
 	}
 }
 
@@ -417,15 +417,15 @@ void RepoApi::removeFromList(Id const &target, QString const &listName, Id const
 	if (target == Id::rootId())
 		return;
 
-	IdList list = mClient.property(target, listName).value<IdList>();
-	IdList temporaryRemovedList = mClient.temporaryRemovedLinksAt(target, direction);
+	IdList list = mClientManager.access()->property(target, listName).value<IdList>();
+	IdList temporaryRemovedList = mClientManager.access()->temporaryRemovedLinksAt(target, direction);
 	if(listName == "links" && list.contains(data)) {
 		temporaryRemovedList.append(data);
 	}
 	list.removeAll(data);
 
-	mClient.setProperty(target, listName, IdListHelper::toVariant(list));
-	mClient.setTemporaryRemovedLinks(target, direction, temporaryRemovedList);
+	mClientManager.access()->setProperty(target, listName, IdListHelper::toVariant(list));
+	mClientManager.access()->setTemporaryRemovedLinks(target, direction, temporaryRemovedList);
 }
 
 Id RepoApi::otherEntityFromLink(Id const &linkId, Id const &firstNode) const
@@ -442,8 +442,8 @@ IdList RepoApi::logicalElements(Id const &type) const
 	Q_ASSERT(type.idSize() == 3);
 
 	IdList result;
-	foreach (Id id, mClient.elements()) {
-		if (id.element() == type.element() && mClient.isLogicalId(id))
+	foreach (Id id, mClientManager.access()->elements()) {
+		if (id.element() == type.element() && mClientManager.access()->isLogicalId(id))
 			result.append(id);
 	}
 	return result;
@@ -454,8 +454,8 @@ IdList RepoApi::graphicalElements(Id const &type) const
 	Q_ASSERT(type.idSize() == 3);
 
 	IdList result;
-	foreach (Id id, mClient.elements()) {
-		if (id.element() == type.element() && !mClient.isLogicalId(id))
+	foreach (Id id, mClientManager.access()->elements()) {
+		if (id.element() == type.element() && !mClientManager.access()->isLogicalId(id))
 			result.append(id);
 	}
 	return result;
@@ -464,7 +464,7 @@ IdList RepoApi::graphicalElements(Id const &type) const
 IdList RepoApi::elementsByType(QString const &type) const
 {
 	IdList result;
-	foreach (Id id, mClient.elements()) {
+	foreach (Id id, mClientManager.access()->elements()) {
 		if (id.element() == type)
 			result.append(id);
 	}
@@ -473,25 +473,25 @@ IdList RepoApi::elementsByType(QString const &type) const
 
 int RepoApi::elementsCount() const
 {
-	return mClient.elements().size();
+	return mClientManager.access()->elements().size();
 }
 
 bool RepoApi::exist(Id const &id) const
 {
-	return mClient.exist(id);
+	return mClientManager.access()->exist(id);
 }
 
 IdList RepoApi::temporaryRemovedLinksAt(Id const &id, QString const &direction) const
 {
-	return mClient.temporaryRemovedLinksAt(id, direction);
+	return mClientManager.access()->temporaryRemovedLinksAt(id, direction);
 }
 
 void RepoApi::setTemporaryRemovedLinks(Id const &id, IdList const &value, QString const &direction)
 {
-	mClient.setTemporaryRemovedLinks(id, direction, value);
+	mClientManager.access()->setTemporaryRemovedLinks(id, direction, value);
 }
 
 void RepoApi::removeTemporaryRemovedLinks(Id const &id)
 {
-	mClient.removeTemporaryRemovedLinks(id);
+	mClientManager.access()->removeTemporaryRemovedLinks(id);
 }

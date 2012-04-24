@@ -16,7 +16,7 @@ namespace qrmc {
 	class MetaCompiler
 	{
 	public:
-		MetaCompiler(QString const &qrmcDir, QString const &workingCopyDir);
+		MetaCompiler(QString const &qrmcDir, QList<QString> const &workingCopyDir);
 		~MetaCompiler();
 		bool compile(QString const &metamodel = "");
 		Editor *loadMetaModel(qReal::Id const &id);

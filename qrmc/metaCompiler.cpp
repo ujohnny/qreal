@@ -16,7 +16,7 @@
 using namespace qReal;
 using namespace qrmc;
 
-MetaCompiler::MetaCompiler(QString const &qrmcDir, QString const &workingCopyDir) : mApi(workingCopyDir)
+MetaCompiler::MetaCompiler(QString const &qrmcDir, QList<QString> const &workingCopyDir) : mApi(workingCopyDir)
 {
 	mLocalDir = qrmcDir;
 	mApi.setName(Id::rootId(), Id::rootId().toString());
