@@ -1360,12 +1360,18 @@ void MainWindow::diagramInCreateListSelected(int num)
 
 void MainWindow::createDiagram(QString const &idString)
 {
-	Id const created = mModels->graphicalModelAssistApi().createElement(Id::rootId(), Id::loadFromString(idString));
+	Id const created =
+			mModels->graphicalModelAssistApi().createElement(Id::rootId(),
+															 Id::loadFromString(idString));
+
 	QModelIndex const index = mModels->graphicalModelAssistApi().indexById(created);
 	mUi->graphicalModelExplorer->setCurrentIndex(index);
 	Id const logicalIdCreated = mModels->graphicalModelAssistApi().logicalId(created);
 	QModelIndex const logicalIndex = mModels->logicalModelAssistApi().indexById(logicalIdCreated);
 	mUi->logicalModelExplorer->setCurrentIndex(logicalIndex);
+
+	qDebug() << mModels->graphicalModelAssistApi().property(Id::rootId(), "project");
+
 	openNewTab(index);
 }
 

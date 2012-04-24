@@ -8,7 +8,6 @@ ClientManager::ClientManager()
 }
 
 ClientManager::ClientManager(QList<QString> const &files)
-	: mWorkingFile(files[0]) //prototype
 {
 	foreach(QString const &file, files) {
 		addClient(file);
@@ -22,9 +21,14 @@ ClientManager::~ClientManager() {
 	}
 }
 
+Client* ClientManager::access(const QString &clientId) {
+	return mClients[clientId];
+}
+
 void ClientManager::addClient(const QString &workingFile) {
 	Client *c = new Client(workingFile);
-	mClients.insert(workingFile, c);
+	mKey = c->property(qReal::Id::rootId(), "project").toString(); //be careful here!
+	mClients.insert(mKey, c);
 }
 
 void ClientManager::removeClient(const QString &clientId) {

@@ -2,6 +2,7 @@
 #include "../../qrkernel/exception/exception.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QUuid>
 
 using namespace qReal;
 using namespace qrRepo;
@@ -19,6 +20,7 @@ void Client::init()
 {
 	mObjects.insert(Id::rootId(), new Object(Id::rootId()));
 	mObjects[Id::rootId()]->setProperty("name", Id::rootId().toString());
+	mObjects[Id::rootId()]->setProperty("project", QUuid::createUuid().toString());
 }
 
 Client::~Client()
