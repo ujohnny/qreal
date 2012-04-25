@@ -20,7 +20,6 @@ void Client::init()
 {
 	mObjects.insert(Id::rootId(), new Object(Id::rootId()));
 	mObjects[Id::rootId()]->setProperty("name", Id::rootId().toString());
-	mObjects[Id::rootId()]->setProperty("project", QUuid::createUuid().toString());
 }
 
 Client::~Client()
@@ -222,6 +221,8 @@ void Client::loadFromDisk()
 {
 	serializer.loadFromDisk(mObjects);
 	addChildrenToRootObject();
+	if (!(mObjects[Id::rootId()]->hasProperty("project")))
+		mObjects[Id::rootId()]->setProperty("project", QUuid::createUuid().toString());
 }
 
 void Client::importFromDisk(QString const &importedFile)

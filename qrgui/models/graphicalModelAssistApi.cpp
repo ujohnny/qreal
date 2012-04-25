@@ -225,7 +225,3 @@ int GraphicalModelAssistApi::childrenOfDiagram(const Id &parent) const
 {
 	return mModelsAssistApi.childrenOfDiagram(parent);
 }
-
-QVariant GraphicalModelAssistApi::property(Id const &id, QString const &propertyName) const {
-	return mGraphicalModel.api().property(id, propertyName);
-}

@@ -15,7 +15,7 @@ public:
 	ClientManager(QList<QString> const &files);
 	~ClientManager();
 
-	void addClient(QString const &workingFile);
+	QString addClient(QString const &workingFile);
 	void removeClient(QString const &clientId);
 
 	Client* access() { return mClients[mKey]; } //prototype element
@@ -23,8 +23,8 @@ public:
 
 	Client* access(QString const &clientId);
 
-	//for future if we will create definition of current project
-	//void setMainClient();
+	QList<QString> projectIds();
+	void setCurrentClient(QString const &key);
 
 private:
 	QHash<QString, Client*> mClients;

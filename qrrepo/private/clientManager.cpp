@@ -12,12 +12,12 @@ ClientManager::ClientManager(QList<QString> const &files)
 	foreach(QString const &file, files) {
 		addClient(file);
 	}
+	mKey = mClients.keys()[0];
 }
 
 ClientManager::~ClientManager() {
 	foreach (QString const &id, mClients.keys()) {
-		delete mClients[id];
-		mClients.remove(id);
+		removeClient(id);
 	}
 }
 
@@ -25,15 +25,24 @@ Client* ClientManager::access(const QString &clientId) {
 	return mClients[clientId];
 }
 
-void ClientManager::addClient(const QString &workingFile) {
+QString ClientManager::addClient(const QString &workingFile) {
 	Client *c = new Client(workingFile);
-	mKey = c->property(qReal::Id::rootId(), "project").toString(); //be careful here!
-	mClients.insert(mKey, c);
+	QString key = c->property(qReal::Id::rootId(), "project").toString();
+	mClients.insert(key, c);
+	return key;
 }
 
 void ClientManager::removeClient(const QString &clientId) {
 	delete mClients[clientId];
 	mClients.remove(clientId);
+}
+
+QList<QString> ClientManager::projectIds() {
+	return mClients.keys();
+}
+
+void ClientManager::setCurrentClient(const QString &key) {
+	mKey = key;
 }
 
 QList<QString> ClientManager::workingFiles() {

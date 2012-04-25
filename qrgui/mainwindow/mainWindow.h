@@ -197,6 +197,8 @@ private slots:
 	void closeProject();
 	void closeProjectAndSave();
 
+	void switchProject();
+
 private:
 	/// @param mCodeTabManager - Map that keeps pairs of opened tabs and their code areas.
 	QMap<EditorView*, CodeArea*> *mCodeTabManager;

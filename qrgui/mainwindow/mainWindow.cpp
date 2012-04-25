@@ -20,6 +20,7 @@
 #include <QAbstractButton>
 
 #include "errorReporter.h"
+#include "switchDialog.h"
 
 #include "../editorPluginInterface/editorInterface.h"
 #include "shapeEdit/shapeEdit.h"
@@ -223,6 +224,7 @@ void MainWindow::connectActions()
 
 	connect(&mPreferencesDialog, SIGNAL(paletteRepresentationChanged()), this
 		, SLOT(changePaletteRepresentation()));
+	connect(mUi->actionSwitch_Project, SIGNAL(triggered()), this, SLOT(switchProject()));
 }
 
 QModelIndex MainWindow::rootIndex() const
@@ -532,7 +534,7 @@ bool MainWindow::open(QString const &fileName)
 
 	refreshRecentProjectsList(fileName);
 
-	closeProject();
+	//closeProject(); where should we close projects with multiproject repo?
 
 	mModels->repoControlApi().open(fileName);
 	mModels->reinit();
@@ -1369,9 +1371,6 @@ void MainWindow::createDiagram(QString const &idString)
 	Id const logicalIdCreated = mModels->graphicalModelAssistApi().logicalId(created);
 	QModelIndex const logicalIndex = mModels->logicalModelAssistApi().indexById(logicalIdCreated);
 	mUi->logicalModelExplorer->setCurrentIndex(logicalIndex);
-
-	qDebug() << mModels->graphicalModelAssistApi().property(Id::rootId(), "project");
-
 	openNewTab(index);
 }
 
@@ -1878,4 +1877,9 @@ void MainWindow::changePaletteRepresentation()
 		loadPlugins();
 		mUi->paletteTree->setComboBoxIndex();
 	}
+}
+
+void MainWindow::switchProject() {
+	gui::SwitchDialog d(mModels);
+	d.exec();
 }

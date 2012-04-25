@@ -362,7 +362,7 @@ void RepoApi::exterminate()
 
 void RepoApi::open(QString const &saveFile)
 {
-	mClientManager.access()->open(saveFile);
+	mClientManager.setCurrentClient(mClientManager.addClient(saveFile));
 }
 
 void RepoApi::saveAll() const
@@ -494,4 +494,12 @@ void RepoApi::setTemporaryRemovedLinks(Id const &id, IdList const &value, QStrin
 void RepoApi::removeTemporaryRemovedLinks(Id const &id)
 {
 	mClientManager.access()->removeTemporaryRemovedLinks(id);
+}
+
+QList<QString> RepoApi::projectIds() const {
+	return mClientManager.projectIds();
+}
+
+void RepoApi::setCurrentProject(const QString &id) {
+	mClientManager.setCurrentClient(id);
 }

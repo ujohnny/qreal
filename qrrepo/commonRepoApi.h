@@ -43,6 +43,7 @@ public:
 	virtual void setParent(qReal::Id const &id, qReal::Id const &parent) = 0;
 
 	virtual QString typeName(qReal::Id const &id) const = 0;
+
 };
 
 }

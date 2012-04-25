@@ -77,8 +77,6 @@ public:
 	bool hasRootDiagrams() const;
 	int childrenOfRootDiagram() const;
 	int childrenOfDiagram(const Id &parent) const;
-
-	QVariant property(Id const &id, QString const &propertyName) const;
 signals:
 	void nameChanged(Id const &id);
 

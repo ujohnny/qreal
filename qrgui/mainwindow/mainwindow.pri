@@ -9,7 +9,8 @@ HEADERS += \
 	mainwindow/errorListWidget.h \
 	mainwindow/mainWindowInterpretersInterface.h \
 	mainwindow/helpBrowser.h \
-	mainwindow/paletteTree.h
+	mainwindow/paletteTree.h \
+    mainwindow/switchDialog.h
 
 SOURCES += \
 	mainwindow/mainWindow.cpp \
@@ -19,10 +20,12 @@ SOURCES += \
 	mainwindow/error.cpp \
 	mainwindow/errorListWidget.cpp \
 	mainwindow/helpBrowser.cpp \
-	mainwindow/paletteTree.cpp
+	mainwindow/paletteTree.cpp \
+    mainwindow/switchDialog.cpp
 
 FORMS += \
-	mainwindow/mainWindow.ui
+	mainwindow/mainWindow.ui \
+    mainwindow/switchDialog.ui
 
 # Shape editor
 HEADERS += \

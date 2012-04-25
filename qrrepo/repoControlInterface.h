@@ -22,6 +22,9 @@ public:
 
 	/// Returns current working file name, to which model is saved
 	virtual QList<QString> workingFiles() const = 0;
+
+	virtual QList<QString> projectIds() const = 0;
+	virtual void setCurrentProject(QString const &id) = 0;
 };
 
 }

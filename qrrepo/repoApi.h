@@ -117,7 +117,8 @@ namespace qrRepo {
 		int elementsCount() const;
 
 		bool exist(qReal::Id const &id) const;
-
+		virtual QList<QString> projectIds() const;
+		virtual void setCurrentProject(QString const &id);
 	private:
 		RepoApi(RepoApi const &other);  // Копировать нельзя.
 		RepoApi& operator =(RepoApi const &);  // Присваивать тоже.
