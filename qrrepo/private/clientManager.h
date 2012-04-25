@@ -19,12 +19,13 @@ public:
 	void removeClient(QString const &clientId);
 
 	Client* access() { return mClients[mKey]; } //prototype element
-	QList<QString> workingFiles();
+	QHash<QString,QString> workingFiles() const;
 
 	Client* access(QString const &clientId);
 
 	QList<QString> projectIds();
 	void setCurrentClient(QString const &key);
+	QString filenameById(QString const &id) const;
 
 private:
 	QHash<QString, Client*> mClients;

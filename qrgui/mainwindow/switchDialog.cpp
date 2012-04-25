@@ -6,11 +6,12 @@
 using namespace qReal;
 using namespace gui;
 
-SwitchDialog::SwitchDialog(models::Models *model, QWidget *parent)
+SwitchDialog::SwitchDialog(models::Models *model, MainWindow *parent)
 	: QDialog(parent)
 	, mUi(new Ui::SwitchDialog)
-	, mIdList(model->repoControlApi().projectIds())
+	, mIdList(model->repoControlApi().workingFiles().values())
 	, mModels(model)
+	, mParent(parent)
 {
 	mUi->setupUi(this);
 	mUi->idList->addItems(mIdList);
@@ -19,9 +20,18 @@ SwitchDialog::SwitchDialog(models::Models *model, QWidget *parent)
 	connect(mUi->closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 void SwitchDialog::loadProject() {
-	mModels->repoControlApi().setCurrentProject(mIdList[mSelectedProject]);
+	//QString id = mModels->repoControlApi().filenameById()
+
+	mModels->repoControlApi().setCurrentProject(
+				mModels->repoControlApi().workingFiles().key(mIdList[mSelectedProject]));
+	mParent->closeAllTabs();
 	mModels->reinit();
 
+	if (mModels->graphicalModel()->rowCount() > 0) {
+		mParent->openNewTab(mModels->graphicalModel()->index(0, 0, QModelIndex()));
+	}
+	mParent->setWindowTitle(mIdList[mSelectedProject]);
+	mParent->setSaveFile(mIdList[mSelectedProject]);
 }
 
 void SwitchDialog::projectChanged(int id) {

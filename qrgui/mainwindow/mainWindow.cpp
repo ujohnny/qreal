@@ -535,6 +535,7 @@ bool MainWindow::open(QString const &fileName)
 	refreshRecentProjectsList(fileName);
 
 	//closeProject(); where should we close projects with multiproject repo?
+	closeAllTabs(); //current replacment for previous string
 
 	mModels->repoControlApi().open(fileName);
 	mModels->reinit();
@@ -549,10 +550,10 @@ bool MainWindow::open(QString const &fileName)
 	mSaveFile = fileName;
 	QString windowTitle = mToolManager.customizer()->windowTitle();
 	if (!fileName.isEmpty()) {
-		setWindowTitle(windowTitle + " - " + mSaveFile);
+		setWindowTitle(mSaveFile);
 	}
 	else
-		setWindowTitle(windowTitle + " - unsaved project");
+		setWindowTitle("unsaved project");
 	return true;
 }
 
@@ -723,7 +724,7 @@ void MainWindow::deleteFromDiagram()
 void MainWindow::editWindowTitle()
 {
 	if (!mUnsavedProjectIndicator){
-		setWindowTitle(windowTitle() + " [modified]");
+		QMainWindow::setWindowTitle(windowTitle() + " [modified]");
 		mUnsavedProjectIndicator = true;
 	}
 }
@@ -1382,7 +1383,7 @@ void MainWindow::saveAll()
 	}
 	mModels->repoControlApi().saveAll();
 	mUnsavedProjectIndicator = false;
-	setWindowTitle(mToolManager.customizer()->windowTitle() + " - " + mSaveFile);
+	setWindowTitle(mSaveFile);
 	SettingsManager::setValue("saveFile", mSaveFile);
 }
 
@@ -1402,7 +1403,7 @@ void MainWindow::saveAs(QString const &fileName)
 	mModels->repoControlApi().saveTo(mSaveFile);
 	if (!mSaveFile.endsWith(".qrs", Qt::CaseInsensitive))
 		mSaveFile += ".qrs";
-	setWindowTitle(mToolManager.customizer()->windowTitle() + " - " + mSaveFile);
+	setWindowTitle(mSaveFile);
 	SettingsManager::setValue("saveFile", mSaveFile);
 }
 
@@ -1692,7 +1693,7 @@ QProgressBar *MainWindow::createProgressBar(QSplashScreen* splash)
 void MainWindow::initToolManager()
 {
 	if (mToolManager.customizer()) {
-		setWindowTitle(mToolManager.customizer()->windowTitle());
+		setWindowTitle("");
 		mUi->logicalModelDock->setVisible(mToolManager.customizer()->showLogicalModelExplorer());
 		setWindowIcon(mToolManager.customizer()->applicationIcon());
 	}
@@ -1737,10 +1738,10 @@ void MainWindow::initWindowTitle()
 		windowTitle = "QReal";
 
 	if (mSaveFile.isEmpty()) {
-		setWindowTitle(windowTitle + " - " + "unsaved project");
+		setWindowTitle("unsaved project");
 	}
 	else {
-		setWindowTitle(windowTitle + " - " + mSaveFile);
+		setWindowTitle(mSaveFile);
 	}
 }
 
@@ -1866,7 +1867,7 @@ void MainWindow::closeProject()
 	if (getCurrentTab())
 		static_cast<EditorViewScene*>(getCurrentTab()->scene())->clearScene();
 	closeAllTabs();
-	setWindowTitle(mToolManager.customizer()->windowTitle());
+	setWindowTitle("");
 }
 void MainWindow::changePaletteRepresentation()
 {
@@ -1880,6 +1881,16 @@ void MainWindow::changePaletteRepresentation()
 }
 
 void MainWindow::switchProject() {
-	gui::SwitchDialog d(mModels);
+	gui::SwitchDialog d(mModels, this);
 	d.exec();
 }
+
+void MainWindow::setSaveFile(const QString &filename) {
+	mSaveFile = filename;
+}
+
+void MainWindow::setWindowTitle(const QString &title) {
+	QString windowTitle = mToolManager.customizer()->windowTitle();
+	QMainWindow::setWindowTitle(windowTitle + " - " + title);
+}
+

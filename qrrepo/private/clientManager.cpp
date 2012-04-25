@@ -45,10 +45,14 @@ void ClientManager::setCurrentClient(const QString &key) {
 	mKey = key;
 }
 
-QList<QString> ClientManager::workingFiles() {
-	QList<QString> workingFiles;
+QHash<QString,QString> ClientManager::workingFiles() const {
+	QHash<QString,QString> workingFiles;
 	foreach (QString const &id, mClients.keys()) {
-		workingFiles.push_back(id);
+		workingFiles.insert(id, mClients.value(id)->workingFile());
 	}
 	return workingFiles;
+}
+
+QString ClientManager::filenameById(const QString &id) const {
+	return mClients[id]->workingFile();
 }

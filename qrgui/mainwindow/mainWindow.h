@@ -78,6 +78,8 @@ public:
 	virtual bool unloadPlugin(QString const &pluginName);
 	virtual bool loadPlugin(QString const &fileName, QString const &pluginName);
 	virtual bool pluginLoaded(QString const &pluginName);
+	void setSaveFile(QString const &filename);
+	virtual void setWindowTitle(QString const &title);
 
 signals:
 	void gesturesShowed();
@@ -98,6 +100,8 @@ public slots:
 	void showErrors(gui::ErrorReporter const * const errorReporter);
 
 	void changePaletteRepresentation();
+	void closeAllTabs();
+	void openNewTab(const QModelIndex &index);
 
 private slots:
 
@@ -143,7 +147,6 @@ private slots:
 	void showGrid(bool isChecked);
 
 	void finalClose();
-	void closeAllTabs();
 
 	void sceneSelectionChanged();
 
@@ -170,8 +173,6 @@ private slots:
 	void graphicalModelExplorerClicked(const QModelIndex &index);
 	void logicalModelExplorerClicked(const QModelIndex &index);
 
-	void openNewTab(const QModelIndex &index);
-
 	/// Called after current tab was changed somehow --- opened, closed, switched to other
 	/// @param newIndex Index of a new active tab, -1 if there is none
 	void currentTabChanged(int newIndex);
@@ -194,9 +195,9 @@ private slots:
 
 	void autosave();
 	void setAutoSaveParameters();
-	void closeProject();
-	void closeProjectAndSave();
 
+	void closeProjectAndSave();
+	void closeProject();
 	void switchProject();
 
 private:

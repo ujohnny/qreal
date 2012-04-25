@@ -386,7 +386,7 @@ void RepoApi::save(qReal::IdList list) const
 	mClientManager.access()->save(list);
 }
 
-QList<QString> RepoApi::workingFiles() const
+QHash<QString,QString> RepoApi::workingFiles() const
 {
 	return mClientManager.workingFiles();
 }
@@ -502,4 +502,8 @@ QList<QString> RepoApi::projectIds() const {
 
 void RepoApi::setCurrentProject(const QString &id) {
 	mClientManager.setCurrentClient(id);
+}
+
+QString RepoApi::filenameById(const QString &id) const {
+	return mClientManager.filenameById(id);
 }

@@ -21,10 +21,11 @@ public:
 	virtual void open(QString const &workingFile) = 0;
 
 	/// Returns current working file name, to which model is saved
-	virtual QList<QString> workingFiles() const = 0;
+	virtual QHash<QString,QString> workingFiles() const = 0;
 
 	virtual QList<QString> projectIds() const = 0;
 	virtual void setCurrentProject(QString const &id) = 0;
+	virtual QString filenameById(QString const &id) const = 0;
 };
 
 }

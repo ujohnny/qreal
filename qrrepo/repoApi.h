@@ -103,7 +103,7 @@ namespace qrRepo {
 
 		void open(QString const &saveFile);
 
-		virtual QList<QString> workingFiles() const;
+		virtual QHash<QString,QString> workingFiles() const;
 
 		// "Глобальные" методы, позволяющие делать запросы к модели в целом.
 		//Returns all elements with .element() == type.element()
@@ -119,6 +119,7 @@ namespace qrRepo {
 		bool exist(qReal::Id const &id) const;
 		virtual QList<QString> projectIds() const;
 		virtual void setCurrentProject(QString const &id);
+		virtual QString filenameById(QString const &id) const;
 	private:
 		RepoApi(RepoApi const &other);  // Копировать нельзя.
 		RepoApi& operator =(RepoApi const &);  // Присваивать тоже.

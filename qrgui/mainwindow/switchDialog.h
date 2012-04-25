@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QDialog>
+#include "mainWindow.h"
 
 namespace Ui {
 class SwitchDialog;
@@ -19,7 +20,7 @@ class SwitchDialog : public QDialog
 	Q_OBJECT
 	
 public:
-	explicit SwitchDialog(models::Models *model, QWidget *parent = 0);
+	explicit SwitchDialog(models::Models *model, MainWindow *parent);
 	~SwitchDialog();
 	
 private slots:
@@ -27,6 +28,7 @@ private slots:
 	void projectChanged(int id);
 
 private:
+	MainWindow *mParent;
 	Ui::SwitchDialog *mUi;
 	QList<QString> mIdList;
 	int mSelectedProject;
