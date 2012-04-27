@@ -123,6 +123,8 @@ MainWindow::MainWindow()
 
 	mModels = new models::Models(saveFiles, mEditorManager);
 
+	mUi->projectsListWidget->addItems(saveFiles);
+
 	mErrorReporter = new gui::ErrorReporter(mUi->errorListWidget, mUi->errorDock);
 	mErrorReporter->updateVisibility(SettingsManager::value("warningWindow", true).toBool());
 
@@ -225,6 +227,7 @@ void MainWindow::connectActions()
 	connect(&mPreferencesDialog, SIGNAL(paletteRepresentationChanged()), this
 		, SLOT(changePaletteRepresentation()));
 	connect(mUi->actionSwitch_Project, SIGNAL(triggered()), this, SLOT(switchProject()));
+
 }
 
 QModelIndex MainWindow::rootIndex() const
@@ -537,6 +540,8 @@ bool MainWindow::open(QString const &fileName)
 	//closeProject(); where should we close projects with multiproject repo?
 	closeAllTabs(); //current replacment for previous string
 
+	//mUi->projectsListWidget->addItem(fileName);
+
 	mModels->repoControlApi().open(fileName);
 	mModels->reinit();
 
@@ -545,7 +550,16 @@ bool MainWindow::open(QString const &fileName)
 	mPropertyModel.setSourceModels(mModels->logicalModel(), mModels->graphicalModel());
 	mUi->graphicalModelExplorer->setModel(mModels->graphicalModel());
 	mUi->logicalModelExplorer->setModel(mModels->logicalModel());
+	mUi->projectsListWidget->addItem(fileName);
 
+	if (mModels->graphicalModel()->rowCount() > 0) {
+		openNewTab(mModels->graphicalModel()->index(0, 0, QModelIndex()));
+	}
+
+	qDebug() << mModels->graphicalModelAssistApi().rootId();
+	//qDebug() << mModels->logicalModelAssistApi().rootId();
+
+	//qDebug() << mModels->graphicalModelAssistApi().rootIndex();
 	connectWindowTitle();
 	mSaveFile = fileName;
 	QString windowTitle = mToolManager.customizer()->windowTitle();
@@ -1523,14 +1537,14 @@ void MainWindow::fullscreen()
 
 	if (mIsFullscreen) {
 		hideDockWidget(mUi->minimapDock, "minimap");
-		hideDockWidget(mUi->graphicalModelDock, "graphicalModel");
-		hideDockWidget(mUi->logicalModelDock, "logicalModel");
+//		hideDockWidget(mUi->graphicalModelDock, "graphicalModel");
+//		hideDockWidget(mUi->logicalModelDock, "logicalModel");
 		hideDockWidget(mUi->propertyDock, "propertyEditor");
 		hideDockWidget(mUi->errorDock, "errorReporter");
 	} else {
 		showDockWidget(mUi->minimapDock, "minimap");
-		showDockWidget(mUi->graphicalModelDock, "graphicalModel");
-		showDockWidget(mUi->logicalModelDock, "logicalModel");
+//		showDockWidget(mUi->graphicalModelDock, "graphicalModel");
+//		showDockWidget(mUi->logicalModelDock, "logicalModel");
 		showDockWidget(mUi->propertyDock, "propertyEditor");
 		showDockWidget(mUi->errorDock, "errorReporter");
 	}
@@ -1694,7 +1708,7 @@ void MainWindow::initToolManager()
 {
 	if (mToolManager.customizer()) {
 		setWindowTitle("");
-		mUi->logicalModelDock->setVisible(mToolManager.customizer()->showLogicalModelExplorer());
+//		mUi->logicalModelDock->setVisible(mToolManager.customizer()->showLogicalModelExplorer());
 		setWindowIcon(mToolManager.customizer()->applicationIcon());
 	}
 }
@@ -1761,6 +1775,7 @@ void MainWindow::initExplorers()
 	connect(&mModels->graphicalModelAssistApi(), SIGNAL(nameChanged(Id const &)), this, SLOT(updateTabName(Id const &)));
 	connect(mUi->graphicalModelExplorer, SIGNAL(clicked(QModelIndex const &)), this, SLOT(graphicalModelExplorerClicked(QModelIndex)));
 	connect(mUi->logicalModelExplorer, SIGNAL(clicked(QModelIndex const &)), this, SLOT(logicalModelExplorerClicked(QModelIndex)));
+	connect(mUi->projectsListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(loadProject(QListWidgetItem*)));
 }
 
 void MainWindow::initRecentProjectsMenu()
@@ -1894,3 +1909,16 @@ void MainWindow::setWindowTitle(const QString &title) {
 	QMainWindow::setWindowTitle(windowTitle + " - " + title);
 }
 
+void MainWindow::loadProject(QListWidgetItem *item) {
+	QString file = item->text();
+	mModels->repoControlApi().setCurrentProject(
+				mModels->repoControlApi().workingFiles().key(file));
+	closeAllTabs();
+	mModels->reinit();
+
+	if (mModels->graphicalModel()->rowCount() > 0) {
+		openNewTab(mModels->graphicalModel()->index(0, 0, QModelIndex()));
+	}
+	setWindowTitle(file);
+	setSaveFile(file);
+}
