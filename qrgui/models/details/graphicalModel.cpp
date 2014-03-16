@@ -31,8 +31,19 @@ void GraphicalModel::init()
 	// Turn off view notification while loading. Model can be inconsistent during a process,
 	// so views shall not update themselves before time. It is important for
 	// scene, where adding edge before adding nodes may lead to disconnected edge.	blockSignals(true);
+	foreach(QString const &id, mApi.projectIds()) {
+		AbstractModelItem* project = new GraphicalModelItem(Id::projectRoot(id),
+															Id(), dynamic_cast<GraphicalModelItem*>(mRootItem));
+		mModelItems.insert(Id::projectRoot(id), project);
+		mModelItems.insert(Id::rootId(), new AbstractModelItem(Id::rootId(), project));
+	}
+
 	blockSignals(true);
-	loadSubtreeFromClient(static_cast<GraphicalModelItem *>(mRootItem));
+
+	foreach(AbstractModelItem* item, mRootItem->children()) {
+		loadSubtreeFromClient(static_cast<GraphicalModelItem *>(item->children().at(0))); //magic 0 cause item have only 1 child
+	}
+
 	blockSignals(false);
 }
 

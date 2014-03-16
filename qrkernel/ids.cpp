@@ -37,6 +37,10 @@ Id Id::rootId()
 	return Id("ROOT_ID", "ROOT_ID", "ROOT_ID", "ROOT_ID");
 }
 
+Id Id::projectRoot(const QString &id) {
+	return Id("PR_ROOT", "PR_ROOT", "PR_ROOT", id);
+}
+
 Id::Id(QString const &editor, QString  const &diagram, QString  const &element, QString  const &id)
 	: mEditor(editor), mDiagram(diagram), mElement(element), mId(id)
 {

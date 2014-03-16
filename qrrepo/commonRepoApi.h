@@ -43,7 +43,8 @@ public:
 	virtual void setParent(qReal::Id const &id, qReal::Id const &parent) = 0;
 
 	virtual QString typeName(qReal::Id const &id) const = 0;
-
+	virtual QList<QString> projectIds() const = 0;
+	virtual void setCurrentProject(QString const &id) = 0;
 };
 
 }

@@ -78,7 +78,11 @@ QModelIndex AbstractModel::parent(const QModelIndex &index) const
 
 QModelIndex AbstractModel::index(AbstractModelItem const * const item) const
 {
-	QList<int> rowCoords;
+	//if (item == mRootItem) {
+	//	return index(0, 0, QModelIndex());
+	//}
+
+	QList<int> rowCoords; //coords in each child list
 
 	for (AbstractModelItem const *curItem = item;
 		curItem != mRootItem; curItem = curItem->parent())
