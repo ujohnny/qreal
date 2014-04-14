@@ -294,6 +294,7 @@ void EditorViewScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 
 void EditorViewScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+	qDebug() << "scene drop event";
 	Q_ASSERT(mWindow);  // should be initialized separately.
 	// constuctor is bad for this, because the scene is created in generated .ui file
 
@@ -1102,6 +1103,7 @@ void EditorViewScene::createEdge(QString const &idStr)
 
 void EditorViewScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	qDebug() << "i'm in scene's mouseReleaseEvent";
 	if ((event->button() == Qt::LeftButton) && !(event->buttons() & Qt::RightButton)) {
 		mLeftButtonPressed = false;
 	}
