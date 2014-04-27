@@ -291,7 +291,6 @@ void DraggableElement::mousePressEvent(QMouseEvent *event)
 
 		drag->exec(Qt::CopyAction);
 	}
-	qDebug() << "i've exited";
 }
 
 #ifdef Q_OS_WIN
