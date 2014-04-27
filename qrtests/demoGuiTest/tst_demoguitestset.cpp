@@ -72,6 +72,9 @@ void DemoGuiTestSet::testShowGrid() {
 
 	bool after = SettingsManager::value("ShowGrid").toBool();
 	QVERIFY(before == !after);
+
+	qReal::EditorView *editorView = qrtestlib::getCurrentEditorView(&w);
+	QVERIFY(after == editorView->editorViewScene()->getNeedDrawGrid());
 }
 
 int main(int argc, char **argv) {
