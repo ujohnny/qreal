@@ -2,6 +2,7 @@
 
 class QMainWindow;
 class QString;
+class QMenu;
 
 namespace qReal {
 class EditorView;
@@ -14,17 +15,24 @@ namespace gui {
 
 namespace qrtestlib {
 
-int activateActionOnToolbar(QMainWindow *
-		, QString const &
-		, QString const &);
+QMenu * getMenu(QMainWindow *mainWindow, QString const &menuName);
 
-qReal::gui::DraggableElement * getElementFromPalette(QMainWindow *
-													 , QString const &);
+int activateActionOnToolbar(QMainWindow *mainWindow
+		, QString const &toolbarName
+		, QString const &actionName);
 
-qReal::gui::TabWidget * getTabWidget(QMainWindow *);
+int activateMenu(QMainWindow *mainWindow, QString const &menuName);
 
-qReal::EditorView * getCurrentEditorView(QMainWindow *);
+int activateActionInMenu(QMainWindow *mainWindow, QString const &menuName
+						 , QString const &actionName);
 
-void findElementOnScene(QMainWindow *);
+qReal::gui::DraggableElement * getElementFromPalette(QMainWindow *mainWindow
+													 , QString const &elementName);
+
+qReal::gui::TabWidget * getTabWidget(QMainWindow *mainWindow);
+
+qReal::EditorView * getCurrentEditorView(QMainWindow *mainWindow);
+
+void findElementOnScene(QMainWindow *mainWindow);
 
 } // end namespace qrtestlib

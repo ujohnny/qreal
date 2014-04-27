@@ -10,6 +10,13 @@
 
 namespace qrtestlib {
 
+QMenu * getMenu(QMainWindow *mainWindow, QString const &menuName) {
+	// assuming that menubar is exclusive
+	QMenuBar *menubar = mainWindow->findChild<QMenuBar *>();
+	QMenu *menu = menubar->findChild<QMenu *>(menuName);
+	return menu;
+}
+
 int activateActionOnToolbar(QMainWindow *mainWindow
 							 , QString const &toolbarName
 							 , QString const &actionName)
@@ -25,6 +32,35 @@ int activateActionOnToolbar(QMainWindow *mainWindow
 	}
 	return 1;
 }
+
+int activateMenu(QMainWindow *mainWindow, QMenu *menu) {
+	qDebug() << menu->title().at(1).toLatin1();
+	if (menu != nullptr) {
+		QTest::keyClick(mainWindow, menu->title().at(1).toLatin1(), Qt::AltModifier);
+		return 0;
+	}
+	return 1;
+}
+
+int activateActionInMenu(QMainWindow *mainWindow, QString const &menuName
+						 , QString const &actionName)
+{
+	QMenu *menu = getMenu(mainWindow, menuName);
+	activateMenu(mainWindow, menu);
+
+	QTest::qWait(1000);
+	QList<QAction *> actions = menu->actions();
+	foreach (QAction *action, actions) {
+		if (action->objectName() == actionName) {
+			QTest::keyClick(menu, Qt::Key_Enter);
+			return 0;
+		}
+		QTest::qWait(1000);
+		QTest::keyClick(menu, Qt::Key_Down);
+	}
+	return 1;
+}
+
 
 qReal::gui::DraggableElement * getElementFromPalette(QMainWindow *mainWindow
 													, QString const &elementName)
