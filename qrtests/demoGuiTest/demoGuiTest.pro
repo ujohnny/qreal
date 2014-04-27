@@ -6,33 +6,35 @@
 
 QT       += testlib
 
-TARGET = tst_demoguitesttest
-CONFIG   += console
+TARGET = tst_demoguitestset
+CONFIG   += console c++11 rpath_libdirs
+
 CONFIG   -= app_bundle
-CONFIG += c++11
+
+LIBS += -L$$PWD/../../bin -lqrtestlib
+
 TEMPLATE = app
 
-OBJECTS_DIR = .obj
-UI_DIR = .ui
-MOC_DIR = .moc
-RCC_DIR = .moc
-
 !macx {
-        QMAKE_LFLAGS += -Wl,-O1,-rpath,$$PWD/../bin/
-        QMAKE_LFLAGS += -Wl,-rpath,$$PWD/../bin/thirdparty/
+	QMAKE_LFLAGS += -Wl,-O1,-rpath,$$PWD/../../bin/
+	QMAKE_LFLAGS += -Wl,-rpath,$$PWD/../../bin/thirdparty/
 }
 
 if (equals(QMAKE_CXX, "g++") : !macx) {
         QMAKE_LFLAGS += -Wl,-E
 }
 
-CONFIG += rpath_libdirs
-
 DESTDIR = $$PWD/../../bin
 
-SOURCES += tst_demoguitesttest.cpp
+SOURCES += \
+    tst_demoguitestset.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
-LIBS += -lpthread
+OBJECTS_DIR = .obj
+UI_DIR = .ui
+MOC_DIR = .moc
+RCC_DIR = .moc
 
 include(../../qrgui/qrgui.pri)
+
+HEADERS +=

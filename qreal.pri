@@ -13,8 +13,7 @@ SUBDIRS = \
 	plugins \
 	qrkernel \
 	qrutils \
-        thirdparty \
-        qrtests
+	thirdparty
 
 qrutils.depends = qrkernel
 qrrepo.depends = qrkernel qrutils

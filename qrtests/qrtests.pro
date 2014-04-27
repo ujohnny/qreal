@@ -3,4 +3,9 @@ TEMPLATE = subdirs
 CONFIG += c++11
 
 SUBDIRS += \
-    demoGuiTest
+	demoGuiTest \
+	qrtestlib
+
+demoGuiTest.depends = qrtestlib
+
+
