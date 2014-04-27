@@ -20,8 +20,9 @@ public:
 private Q_SLOTS:
 	void initTestCase() {}
 	void cleanupTestCase() {}
-	void testOpenSave();
+	void testShowGrid();
 private:
+	void testOpenSave();
 	void testNewDiagram();
 	void testNewProject();
 };
@@ -54,13 +55,23 @@ void DemoGuiTestSet::testOpenSave() {
 	QTest::qWaitForWindowExposed(&w);
 	QTest::qWait(1000);
 	qReal::EditorView *view = qrtestlib::getCurrentEditorView(&w);
-	qDebug() << view->editorViewScene()->children();
+	QVERIFY(view != nullptr);
+}
+
+void DemoGuiTestSet::testShowGrid() {
+	MainWindow w("testsave.qrs");
+	QTest::qWaitForWindowExposed(&w);
+	QTest::qWait(1000);
+	qReal::EditorView *view = qrtestlib::getCurrentEditorView(&w);
 	QVERIFY(view != nullptr);
 
+	bool before = SettingsManager::value("ShowGrid").toBool();
 	int res = qrtestlib::activateActionInMenu(&w, "menuSettings"
 											  , "actionShow_grid");
 	QVERIFY(res == 0);
-	QTest::qWait(4000);
+
+	bool after = SettingsManager::value("ShowGrid").toBool();
+	QVERIFY(before == !after);
 }
 
 int main(int argc, char **argv) {
