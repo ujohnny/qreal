@@ -20,8 +20,10 @@ public:
 private Q_SLOTS:
 	void initTestCase() {}
 	void cleanupTestCase() {}
-	void testShowGrid();
+	void testSceneElement();
 private:
+	void testGesture();
+	void testShowGrid();
 	void testOpenSave();
 	void testNewDiagram();
 	void testNewProject();
@@ -75,6 +77,41 @@ void DemoGuiTestSet::testShowGrid() {
 
 	qReal::EditorView *editorView = qrtestlib::getCurrentEditorView(&w);
 	QVERIFY(after == editorView->editorViewScene()->getNeedDrawGrid());
+}
+
+void DemoGuiTestSet::testSceneElement() {
+	MainWindow w("testsave.qrs");
+	QTest::qWaitForWindowExposed(&w);
+	QTest::qWait(1000);
+	qrtestlib::clickObjectOnScene(&w, "Enum");
+	QTest::qWait(2000);
+	qrtestlib::renameObjectOnScene(&w, "Enum", "ASFF");
+	// some validation from models is needed here
+
+	QTest::qWait(10000);
+}
+
+void DemoGuiTestSet::testGesture() {
+	MainWindow w;
+	QTest::qWaitForWindowExposed(&w);
+	int res = qrtestlib::activateActionOnToolbar(&w, "fileToolbar", "actionNew_Diagram");
+	QVERIFY(res == 0);
+
+	QTest::qWait(1000);
+	qReal::gui::TabWidget *tw = qrtestlib::getTabWidget(&w);
+	QVERIFY(dynamic_cast<qReal::EditorView *>(tw->currentWidget()) != nullptr);
+
+	qReal::EditorView *view = qrtestlib::getCurrentEditorView(&w);
+	QVERIFY(view != nullptr);
+
+	QTest::mousePress(view->viewport(), Qt::RightButton, 0, QPoint(100, 200));
+	QTest::mouseMove(view->viewport(), QPoint(100, 100), 100);
+	QTest::mouseMove(view->viewport(), QPoint(200, 100), 100);
+	QTest::mouseMove(view->viewport(), QPoint(200, 200), 100);
+	QTest::mouseMove(view->viewport(), QPoint(100, 200), 100);
+	QTest::mouseRelease(view->viewport(), Qt::RightButton, 0, QPoint(100, 200), 100);
+	QTest::qWait(5000);
+
 }
 
 int main(int argc, char **argv) {

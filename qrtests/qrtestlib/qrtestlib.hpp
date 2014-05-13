@@ -21,6 +21,16 @@ int activateActionOnToolbar(QMainWindow *mainWindow
 		, QString const &toolbarName
 		, QString const &actionName);
 
+int activatePropertyInPropertyEditor(QMainWindow *mainwindow
+									 , QString const &propertyName);
+
+int clickObjectOnScene(QMainWindow *window
+					   , QString const &name);
+
+int renameObjectOnScene(QMainWindow *window
+						, QString const &currentName
+						, QString const &newName);
+
 int activateMenu(QMainWindow *mainWindow, QString const &menuName);
 
 int activateActionInMenu(QMainWindow *mainWindow, QString const &menuName
