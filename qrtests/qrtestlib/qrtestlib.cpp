@@ -4,6 +4,7 @@
 #include <QtWidgets>
 #include <QtTest>
 
+#include <qrgui/mainwindow/mainWindow.h>
 #include <qrgui/mainwindow/palette/draggableElement.h>
 #include <qrgui/mainwindow/tabWidget.h>
 #include <qrgui/mainwindow/palette/paletteTree.h>
@@ -33,8 +34,9 @@ int activateActionOnToolbar(QMainWindow *mainWindow
 	return 1;
 }
 
-int activatePropertyInPropertyEditor(QMainWindow *mainwindow
-									 , const QString &propertyName)
+int setPropertyInPropertyEditor(QMainWindow *mainwindow
+								, const QString &propertyName
+								, const QString &propertyValue)
 {
 	PropertyEditorView *dock =
 			mainwindow->findChild<PropertyEditorView *>("propertyEditor");
@@ -44,12 +46,11 @@ int activatePropertyInPropertyEditor(QMainWindow *mainwindow
 	QList<QTreeWidgetItem *> items =
 			treeWidget->findItems(propertyName, Qt::MatchExactly);
 	qDebug() << items.at(0);
-	qDebug() << treeWidget->findChildren<QWidget *>();
 	Q_ASSERT(items.size() == 1);
-	QWidget *iw = treeWidget->itemWidget(items.at(0), 0);
-	qDebug() << iw;
-	QTest::mouseClick(iw, Qt::LeftButton);
-	// TODO
+
+	QTest::mouseClick(treeWidget->viewport(), Qt::LeftButton, 0, treeWidget->visualItemRect(items.at(0)).center() + QPoint(10, 0));
+	QTest::keyClicks(nullptr, propertyValue, Qt::NoModifier, 200);
+	QTest::keyClick((QWidget *) nullptr, Qt::Key_Enter, Qt::NoModifier, 200);
 
 	return 0;
 }
@@ -146,6 +147,31 @@ int renameObjectOnScene(QMainWindow *window, const QString &currentName
 		}
 	}
 	return 0;
+}
+
+Id getElementIdFromFriendlyId(QMainWindow *window, const QString &name) {
+	qReal::EditorView *view = qrtestlib::getCurrentEditorView(window);
+	Q_ASSERT(view != nullptr);
+
+	QList<QGraphicsItem *> l = view->items();
+	foreach (QGraphicsItem *i, l) {
+		qReal::Label *label = dynamic_cast<qReal::Label *>(i);
+		if (label != nullptr) {
+			if (label->toPlainText() == name) {
+				qReal::Element *element = view->editorViewScene()
+						->getElemAt(label->parentItem()->scenePos());
+				return element->id();
+			}
+		}
+	}
+}
+
+void validateElementPropertyInModel(qReal::MainWindow *w, const Id &id
+									, const QString &propertyName
+									, const QString &expectedValue)
+{
+	QMap<QString, QVariant> props = w->models()->graphicalModelAssistApi().properties(id);
+	QCOMPARE(props[propertyName].toString(), expectedValue);
 }
 
 } // end namespace qrtestlib

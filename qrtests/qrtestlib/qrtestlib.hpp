@@ -6,6 +6,8 @@ class QMenu;
 
 namespace qReal {
 class EditorView;
+class Id;
+class MainWindow;
 
 namespace gui {
 	class DraggableElement;
@@ -21,8 +23,9 @@ int activateActionOnToolbar(QMainWindow *mainWindow
 		, QString const &toolbarName
 		, QString const &actionName);
 
-int activatePropertyInPropertyEditor(QMainWindow *mainwindow
-									 , QString const &propertyName);
+int setPropertyInPropertyEditor(QMainWindow *mainwindow
+								, QString const &propertyName
+								, QString const &propertyValue);
 
 int clickObjectOnScene(QMainWindow *window
 					   , QString const &name);
@@ -44,5 +47,10 @@ qReal::gui::TabWidget * getTabWidget(QMainWindow *mainWindow);
 qReal::EditorView * getCurrentEditorView(QMainWindow *mainWindow);
 
 void findElementOnScene(QMainWindow *mainWindow);
+
+qReal::Id getElementIdFromFriendlyId(QMainWindow *window, QString const &name);
+
+void validateElementPropertyInModel(qReal::MainWindow *w, qReal::Id const &id
+									, QString const &propertyName, QString const &expectedValue);
 
 } // end namespace qrtestlib

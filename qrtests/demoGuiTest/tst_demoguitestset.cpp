@@ -22,6 +22,7 @@ private Q_SLOTS:
 	void cleanupTestCase() {}
 	void testSceneElement();
 private:
+	void testPropertyEditor();
 	void testGesture();
 	void testShowGrid();
 	void testOpenSave();
@@ -84,11 +85,13 @@ void DemoGuiTestSet::testSceneElement() {
 	QTest::qWaitForWindowExposed(&w);
 	QTest::qWait(1000);
 	qrtestlib::clickObjectOnScene(&w, "Enum");
-	QTest::qWait(2000);
 	qrtestlib::renameObjectOnScene(&w, "Enum", "ASFF");
 	// some validation from models is needed here
 
-	QTest::qWait(10000);
+	Id id = qrtestlib::getElementIdFromFriendlyId(&w, "ASFF");
+	qDebug() << id;
+
+	qrtestlib::validateElementPropertyInModel(&w, id, "name", "ASFF");
 }
 
 void DemoGuiTestSet::testGesture() {
@@ -112,6 +115,14 @@ void DemoGuiTestSet::testGesture() {
 	QTest::mouseRelease(view->viewport(), Qt::RightButton, 0, QPoint(100, 200), 100);
 	QTest::qWait(5000);
 
+}
+
+void DemoGuiTestSet::testPropertyEditor() {
+	MainWindow w("testsave.qrs");
+	QTest::qWaitForWindowExposed(&w);
+	QTest::qWait(1000);
+	qrtestlib::clickObjectOnScene(&w, "Enum");
+	qrtestlib::setPropertyInPropertyEditor(&w, "displayedName", "new name");
 }
 
 int main(int argc, char **argv) {
